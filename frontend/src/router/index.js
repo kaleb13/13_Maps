@@ -40,6 +40,16 @@ const routes = [
         name: 'Jobs',
         component: () => import('@/views/JobsView.vue'),
       },
+      {
+        path: 'settings',
+        name: 'Settings',
+        component: () => import('@/views/SettingsView.vue'),
+      },
+      {
+        path: 'help',
+        name: 'Help',
+        component: () => import('@/views/HelpView.vue'),
+      },
     ],
   },
   {

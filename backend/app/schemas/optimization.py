@@ -17,7 +17,7 @@ class OptimizeRequest(BaseModel):
 class OptimizationJobRead(BaseModel):
     id: UUID
     owner_id: UUID
-    route_request_id: Optional[UUID]
+    route_id: Optional[UUID]
     status: str
     algorithm: str
     profile: str

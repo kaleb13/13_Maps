@@ -4,7 +4,7 @@
     <aside class="side-bar" :class="{ collapsed: isSidebarCollapsed }">
       <div class="side-bar-main">
         <!-- Org Switcher -->
-        <div class="org-switcher">
+        <div class="org-switcher" data-tooltip="Switch Organization">
           <div class="org-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
           </div>
@@ -19,7 +19,7 @@
         <div class="menu-section">
           <p class="section-label">OVERVIEW</p>
           <nav class="nav-group">
-            <router-link to="/dashboard" class="nav-link" exact>
+            <router-link to="/dashboard" class="nav-link" exact data-tooltip="Dashboard">
               <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
               <span>Dashboard</span>
             </router-link>
@@ -30,11 +30,11 @@
         <div class="menu-section">
           <p class="section-label">LOGISTICS OPS</p>
           <nav class="nav-group">
-            <router-link to="/dashboard/routes" class="nav-link">
+            <router-link to="/dashboard/routes" class="nav-link" data-tooltip="Route Management">
               <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
               <span>Route Management</span>
             </router-link>
-            <router-link to="/dashboard/jobs" class="nav-link">
+            <router-link to="/dashboard/jobs" class="nav-link" data-tooltip="Optimization Jobs">
               <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
               <span>Optimization Jobs</span>
             </router-link>
@@ -45,11 +45,11 @@
         <div class="menu-section">
           <p class="section-label">SYSTEM CONFIG</p>
           <nav class="nav-group">
-            <router-link to="/dashboard/settings" class="nav-link">
+            <router-link to="/dashboard/settings" class="nav-link" data-tooltip="Settings">
               <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
               <span>Settings</span>
             </router-link>
-            <router-link to="/dashboard/help" class="nav-link">
+            <router-link to="/dashboard/help" class="nav-link" data-tooltip="Help & Support">
               <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
               <span>Help & Support</span>
             </router-link>
@@ -58,23 +58,21 @@
         <div class="side-bar-spacer"></div>
       </div>
 
-      <!-- Footer Menu -->
-      <div class="side-bar-footer">
-        <div class="user-profile-section">
-          <button @click="handleLogout" class="logout-btn-full">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-            <span>Logout Account</span>
-          </button>
-        </div>
-      </div>
+      <!-- No Footer Menu - Logout moved to User Menu in Top Bar -->
+      
+      <!-- Resizer Handle -->
+      <div class="sidebar-resizer" @click="toggleSidebar"></div>
     </aside>
 
     <!-- Main Section -->
     <div class="main-container">
       <!-- Top Bar -->
       <header class="top-bar">
-        <button class="icon-btn sidebar-toggle" @click="toggleSidebar">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        <button class="icon-btn sidebar-toggle" @click="toggleSidebar" :title="isSidebarCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="18" height="18" x="3" y="3" rx="2" />
+            <path d="M9 3v18" />
+          </svg>
         </button>
         <div class="search-box">
           <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -251,7 +249,28 @@ onUnmounted(() => {
   flex-direction: column;
   flex-shrink: 0;
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden;
+  overflow: visible; /* Allow resizer to be visible/clickable */
+  border-right: 1px solid #E2E8F0;
+  position: relative; /* For resizer positioning */
+}
+
+.sidebar-resizer {
+  position: absolute;
+  top: 0;
+  right: -4px;
+  width: 8px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 50;
+  transition: all 0.2s;
+}
+
+.sidebar-resizer:hover {
+  background-color: rgba(83, 70, 152, 0.2);
+}
+
+.sidebar-resizer:hover {
+  background-color: rgba(83, 70, 152, 0.2);
 }
 
 .side-bar-main {
@@ -281,14 +300,49 @@ onUnmounted(() => {
 }
 
 .side-bar.collapsed .org-switcher {
-  padding: 8px;
+  padding: 0;
   justify-content: center;
+  height: 56px;
+  width: 56px;
+  margin: 8px auto 0 auto;
+  position: relative;
+}
+
+/* Tooltips for Org Switcher in collapsed state */
+.side-bar.collapsed .org-switcher::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: calc(100% + 12px);
+  background: #1E293B;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s;
+  pointer-events: none;
+  z-index: 100;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.side-bar.collapsed .org-switcher:hover::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(5px);
+}
+
+.side-bar.collapsed .nav-group {
+  padding: 0 12px;
 }
 
 .side-bar.collapsed .nav-link {
   justify-content: center;
   padding: 0;
   height: 48px;
+  width: 48px;
+  margin: 0 auto 2px auto;
 }
 
 .side-bar.collapsed .nav-icon {
@@ -318,7 +372,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: 12px;
   flex-shrink: 0;
 }
 
@@ -354,7 +408,7 @@ onUnmounted(() => {
 }
 
 .menu-section {
-  margin-top: 24px;
+  margin-top: 16px;
 }
 
 .section-label {
@@ -377,16 +431,42 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 14px;
-  height: 48px; /* Standard premium sidebar item height */
+  padding: 0 14px;
+  height: 40px; /* Reduced from 48px for a more compact look */
   color: #94A3B8; /* More grayish for inactive items */
   font-size: 14px;
   font-weight: 500; /* Medium */
   text-decoration: none;
-  border-radius: 10px;
+  border-radius: 16px;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   margin-bottom: 2px;
   box-sizing: border-box;
+  position: relative;
+}
+
+/* Tooltips for collapsed state */
+.side-bar.collapsed .nav-link::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: calc(100% + 12px);
+  background: #1E293B;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s;
+  pointer-events: none;
+  z-index: 100;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.side-bar.collapsed .nav-link:hover::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(5px);
 }
 
 .nav-link:hover {
@@ -395,11 +475,10 @@ onUnmounted(() => {
 }
 
 .nav-link.router-link-exact-active {
-  background-color: #FFFFFF;
-  color: #0F172A;
-  font-weight: 600; /* Semi-bold */
-  border: 1px solid #E2E8F0;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  background-color: rgba(83, 70, 152, 0.1);
+  color: #534698;
+  font-weight: 600;
+  box-shadow: none;
 }
 
 .nav-icon {
@@ -407,59 +486,12 @@ onUnmounted(() => {
   transition: color 0.2s;
 }
 
-.nav-link:hover .nav-icon,
-.nav-link.router-link-exact-active .nav-icon {
+.nav-link:hover .nav-icon {
   color: #0F172A;
 }
 
-.side-bar-footer {
-  margin-top: auto;
-  padding: 16px 12px;
-  background-color: transparent;
-}
-
-.footer-link {
-  margin-bottom: 2px;
-}
-
-.user-profile-section {
-  margin-top: 16px;
-  background-color: #E5E5E5;
-  border-radius: 12px;
-  overflow: hidden;
-  transition: all 0.3s;
-}
-
-.logout-btn-full {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  height: 48px;
-  background: none;
-  border: none;
-  color: #64748B;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.logout-btn-full:hover {
-  background-color: #FEE2E2;
-  color: #EF4444;
-}
-
-/* Collapsed profile state */
-.side-bar.collapsed .user-profile-section {
-  margin-left: 8px;
-  margin-right: 8px;
-}
-
-.side-bar.collapsed .logout-btn-full {
-  justify-content: center;
-  padding: 10px;
+.nav-link.router-link-exact-active .nav-icon {
+  color: #534698;
 }
 
 /* --- Main Container --- */
@@ -514,9 +546,11 @@ onUnmounted(() => {
   align-items: center;
   background-color: #FAFAFA;
   border: 1px solid #E2E8F0;
-  border-radius: 999px;
+  border-radius: 16px;
   padding: 0 16px;
-  flex: 1; /* Take all available space in top-bar-left */
+  flex: 1;
+  max-width: 600px; /* Increased from 380px */
+  margin: 0 auto; /* Keeps it centered in the available space */
   height: 38px;
   gap: 10px;
   transition: all 0.3s;

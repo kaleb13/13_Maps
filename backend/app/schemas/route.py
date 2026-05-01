@@ -53,6 +53,8 @@ class RouteListResponse(BaseModel):
 
 class OptimizeRequest(BaseModel):
     locations: List[LocationInput] = Field(..., min_length=2)
+    profile: str = Field("driving", pattern="^(driving|cycling|walking)$")
+    algorithm: str = Field("osrm_trip", pattern="^(osrm_trip|osrm_route)$")
 
 
 class OptimizeResponse(BaseModel):

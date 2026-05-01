@@ -9,8 +9,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
 from app.core.permissions import require_roles
 from app.models.user import User
+from app.models.optimization_job import OptimizationJob
 from app.schemas.route import OptimizeRequest, OptimizeResponse
 from app.services.osrm_service import get_matrix, get_route
+from datetime import datetime, timezone
 
 router = APIRouter()
 
@@ -148,6 +150,20 @@ async def submit_optimization(
             "address": loc.get("address", f"Stop {seq_num}"),
             "status": "pending"
         })
+
+    # 5. Log the job in history
+    job = OptimizationJob(
+        org_id=current_user.org_id,
+        owner_id=current_user.id,
+        status="completed",
+        algorithm=payload.algorithm,
+        profile=payload.profile,
+        total_distance_m=total_distance,
+        total_duration_s=total_duration,
+        completed_at=datetime.now(timezone.utc)
+    )
+    db.add(job)
+    await db.commit()
 
     return {
         "route_id": None,
