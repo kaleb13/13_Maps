@@ -20,6 +20,36 @@ const routes = [
     meta: { guest: true },
   },
   {
+    path: '/about',
+    name: 'About',
+    component: () => import('@/views/AboutView.vue'),
+  },
+  {
+    path: '/pricing',
+    name: 'Pricing',
+    component: () => import('@/views/PricingView.vue'),
+  },
+  {
+    path: '/contact',
+    name: 'Contact',
+    component: () => import('@/views/ContactView.vue'),
+  },
+  {
+    path: '/privacy',
+    name: 'Privacy',
+    component: () => import('@/views/PrivacyView.vue'),
+  },
+  {
+    path: '/terms',
+    name: 'Terms',
+    component: () => import('@/views/TermsView.vue'),
+  },
+  {
+    path: '/support',
+    name: 'Support',
+    component: () => import('@/views/SupportView.vue'),
+  },
+  {
     path: '/dashboard',
     name: 'Dashboard',
     component: () => import('@/views/DashboardView.vue'),

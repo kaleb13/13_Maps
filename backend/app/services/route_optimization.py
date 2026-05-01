@@ -7,6 +7,7 @@ from fastapi import HTTPException
 
 from app.models.route import Route, RouteStop
 from app.services.osrm_service import get_matrix, get_route
+from app.services.movement_profiles import resolve_profile
 import math
 
 class RouteOptimizationService:
@@ -78,12 +79,24 @@ class RouteOptimizationService:
             
         num_stops = len(locations_dict)
         
+        # Resolve the movement profile consistently:
+        # The route has an explicit profile field. If a vehicle is assigned,
+        # its speed_profile takes precedence only if the route profile is still default.
+        vehicle_type = None
+        if route.vehicle:
+            vehicle_type = route.vehicle.vehicle_type
+        
+        profile = resolve_profile(
+            explicit_profile=route.profile,
+            vehicle_type=vehicle_type,
+        )
+        
         # Get matrix and run TSP
         if num_stops > 50:
             durations = RouteOptimizationService.calculate_haversine_matrix(locations_dict)
         else:
             try:
-                matrix_data = await get_matrix(locations_dict, profile=route.profile)
+                matrix_data = await get_matrix(locations_dict, profile=profile)
                 durations = matrix_data.get("durations", [])
                 if not durations or len(durations) != num_stops:
                     durations = RouteOptimizationService.calculate_haversine_matrix(locations_dict)
@@ -93,9 +106,9 @@ class RouteOptimizationService:
         optimized_indices = RouteOptimizationService.nearest_neighbor_tsp(durations, num_stops)
         ordered_locations = [locations_dict[i] for i in optimized_indices]
         
-        # Get final route and legs
+        # Get final route and legs with the resolved profile
         try:
-            route_data = await get_route(ordered_locations, profile=route.profile)
+            route_data = await get_route(ordered_locations, profile=profile)
             osrm_routes = route_data.get("routes", [])
             if not osrm_routes:
                 raise ValueError("No route returned by OSRM")

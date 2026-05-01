@@ -64,3 +64,17 @@ class OptimizeResponse(BaseModel):
     duration: float
     geometry: List[List[float]] = []
     stops: List[dict]
+    profile: str = "driving"          # resolved OSRM profile used
+    profile_label: str = "Driving"    # human-readable label for frontend
+    profile_icon: str = "🚗"         # emoji icon for frontend display
+
+
+class ProfileInfo(BaseModel):
+    key: str
+    label: str
+    icon: str
+    description: str
+
+
+class ProfilesResponse(BaseModel):
+    profiles: List[ProfileInfo]

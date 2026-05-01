@@ -2,6 +2,10 @@
   <main class="auth-page">
     <!-- Left Section: Form -->
     <section class="auth-form-container">
+      <router-link to="/" class="auth-back-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        <span>Back</span>
+      </router-link>
       <div class="form-header">
         <div class="auth-toggle">
           <button 
@@ -206,11 +210,13 @@
         </div>
 
         <div class="info-footer">
-          <a href="#">Privacy</a>
+          <router-link to="/">Home</router-link>
           <span class="dot">·</span>
-          <a href="#">Terms</a>
+          <router-link to="/privacy">Privacy</router-link>
           <span class="dot">·</span>
-          <a href="#">Support</a>
+          <router-link to="/terms">Terms</router-link>
+          <span class="dot">·</span>
+          <router-link to="/support">Support</router-link>
         </div>
       </div>
     </section>
@@ -303,6 +309,25 @@ async function handleRegister() {
   padding: 24px 40px;
   background: white;
   height: 100%;
+  position: relative;
+}
+
+.auth-back-btn {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #64748b;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.auth-back-btn:hover {
+  color: var(--clr-primary);
 }
 
 .form-header {
@@ -313,27 +338,28 @@ async function handleRegister() {
 
 .auth-toggle {
   display: flex;
-  background: #f1f5f9;
-  padding: 5px;
-  border-radius: 14px;
+  background: #fcfcfc;
+  padding: 4px;
+  border-radius: 100px;
+  border: 1px solid #eee;
 }
 
 .toggle-btn {
-  padding: 10px 32px;
-  border-radius: 10px;
+  padding: 8px 28px;
+  border-radius: 100px;
   border: none;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
-  color: #64748b;
+  color: #888;
   background: transparent;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .toggle-btn.active {
   background: white;
-  color: #000;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  color: var(--clr-primary);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
 .form-body {
@@ -390,28 +416,28 @@ async function handleRegister() {
 
 .input {
   width: 100%;
-  padding: 9px 12px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  padding: 12px 16px;
+  background: white;
+  border: 1px solid #eee;
   border-radius: 8px;
   font-size: 14px;
-  color: #1e293b;
-  transition: all 0.2s;
+  color: #1a1a1a;
+  transition: all 0.3s ease;
 }
 
 .input-wrapper .input {
-  padding-left: 36px;
+  padding-left: 44px;
 }
 
 .input:focus {
   background: white;
-  border-color: #000;
+  border-color: var(--clr-primary);
   outline: none;
-  box-shadow: 0 0 0 3px rgba(0,0,0,0.03);
+  box-shadow: 0 0 0 4px rgba(83, 70, 152, 0.05);
 }
 
 .btn-primary {
-  background: #000;
+  background: var(--clr-primary);
   color: white;
   padding: 11px;
   border-radius: 8px;
@@ -422,10 +448,12 @@ async function handleRegister() {
   justify-content: center;
   align-items: center;
   text-align: center;
+  border: none;
+  cursor: pointer;
 }
 
 .btn-primary:hover {
-  background: #1e293b;
+  background: var(--clr-primary-d);
 }
 
 /* --- Right Info Section --- */

@@ -3,16 +3,38 @@
     <!-- Side Bar -->
     <aside class="side-bar" :class="{ collapsed: isSidebarCollapsed }">
       <div class="side-bar-main">
-        <!-- Org Switcher -->
-        <div class="org-switcher" data-tooltip="Switch Organization">
-          <div class="org-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <!-- Org Switcher & Menu -->
+        <div class="org-switcher-container">
+          <div v-if="isOrgMenuOpen" class="menu-overlay-transparent" @click="isOrgMenuOpen = false"></div>
+          
+          <div class="org-switcher" @click="toggleOrgMenu" :class="{ 'is-active': isOrgMenuOpen }" data-tooltip="Organization Menu">
+            <div class="org-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            </div>
+            <div class="org-info">
+              <span class="org-name">13 Maps Hub</span>
+              <span class="org-subtext">Logistics Admin</span>
+            </div>
+            <svg class="chevron" :class="{ 'rotated': isOrgMenuOpen }" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
           </div>
-          <div class="org-info">
-            <span class="org-name">13 Maps Hub</span>
-            <span class="org-subtext">Logistics Admin</span>
-          </div>
-          <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 15l5 5 5-5M7 9l5-5 5 5"/></svg>
+
+          <transition name="fade">
+            <div v-if="isOrgMenuOpen" class="org-dropdown">
+              <router-link to="/" class="dropdown-item" @click="isOrgMenuOpen = false">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                <span>Landing Page</span>
+              </router-link>
+              <router-link to="/dashboard/settings" class="dropdown-item" @click="isOrgMenuOpen = false">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                <span>Settings</span>
+              </router-link>
+              <div class="dropdown-divider"></div>
+              <button @click="handleLogout" class="dropdown-item logout">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                <span>Log Out</span>
+              </button>
+            </div>
+          </transition>
         </div>
 
         <!-- Overview Section -->
@@ -91,9 +113,78 @@
             <button class="icon-btn" title="Language">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
             </button>
-            <div class="notification-btn">
-              <button class="icon-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button>
-              <span class="notif-badge">2</span>
+            <div class="notification-btn-wrapper">
+              <div v-if="isNotifMenuOpen" class="menu-overlay-transparent" @click="isNotifMenuOpen = false"></div>
+              
+              <button class="icon-btn" @click="toggleNotifMenu" :class="{ 'is-active': isNotifMenuOpen }" title="Notifications">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                <span class="notif-badge">2</span>
+              </button>
+
+              <transition name="fade">
+                <div v-if="isNotifMenuOpen" class="notif-dropdown">
+                  <div class="notif-header">
+                    <div class="notif-header-top">
+                      <h3>Notifications</h3>
+                      <button class="mark-read-btn">Mark all as read</button>
+                    </div>
+                    <p class="notif-header-sub">You have 2 unread updates today</p>
+                  </div>
+                  
+                  <div class="notif-list">
+                    <!-- Item 1 -->
+                    <div class="notif-item unread">
+                      <div class="notif-icon-box success">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                      </div>
+                      <div class="notif-content">
+                        <div class="notif-title-row">
+                          <span class="notif-title">Optimization Successful</span>
+                          <span class="notif-dot"></span>
+                        </div>
+                        <p class="notif-desc">Route #9421 for "North Region" has been optimized with 14% fuel savings.</p>
+                        <span class="notif-time">2 mins ago</span>
+                      </div>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div class="notif-item unread">
+                      <div class="notif-icon-box primary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                      </div>
+                      <div class="notif-content">
+                        <div class="notif-title-row">
+                          <span class="notif-title">Cluster Job Started</span>
+                          <span class="notif-dot"></span>
+                        </div>
+                        <p class="notif-desc">Large scale optimization job [ID: 882] has been initiated on the edge cluster.</p>
+                        <span class="notif-time">1 hour ago</span>
+                      </div>
+                    </div>
+
+                    <!-- Item 3 (Read) -->
+                    <div class="notif-item">
+                      <div class="notif-icon-box warning">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                      </div>
+                      <div class="notif-content">
+                        <div class="notif-title-row">
+                          <span class="notif-title">System Maintenance</span>
+                        </div>
+                        <p class="notif-desc">Scheduled maintenance for the OSRM engine completed successfully.</p>
+                        <span class="notif-time">Yesterday</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="notif-footer">
+                    <button class="view-all-btn">
+                      <span>View Notification Center</span>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                    </button>
+                  </div>
+                </div>
+              </transition>
             </div>
           </div>
           <div class="divider-v"></div>
@@ -168,6 +259,8 @@ const auth = useAuthStore()
 
 const isSidebarCollapsed = ref(false)
 const isUserMenuOpen = ref(false)
+const isOrgMenuOpen = ref(false)
+const isNotifMenuOpen = ref(false)
 const searchInput = ref(null)
 
 const breadcrumbs = computed(() => {
@@ -207,6 +300,14 @@ function toggleUserMenu() {
   isUserMenuOpen.value = !isUserMenuOpen.value
 }
 
+function toggleOrgMenu() {
+  isOrgMenuOpen.value = !isOrgMenuOpen.value
+}
+
+function toggleNotifMenu() {
+  isNotifMenuOpen.value = !isNotifMenuOpen.value
+}
+
 function handleLogout() {
   auth.logout()
   router.push('/login')
@@ -218,8 +319,10 @@ const handleGlobalKeydown = (e) => {
     e.preventDefault()
     searchInput.value?.focus()
   }
-  if (e.key === 'Escape' && isUserMenuOpen.value) {
+  if (e.key === 'Escape') {
     isUserMenuOpen.value = false
+    isOrgMenuOpen.value = false
+    isNotifMenuOpen.value = false
   }
 }
 
@@ -349,19 +452,76 @@ onUnmounted(() => {
   margin: 0;
 }
 
+.org-switcher-container {
+  position: relative;
+  z-index: 100;
+}
+
+.menu-overlay-transparent {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  background: transparent;
+}
+
 .org-switcher {
   margin: 8px 12px 0 12px;
   padding: 8px 12px;
-  height: 56px; /* 8px margin-top + 56px height = 64px (matches top bar bottom) */
+  height: 56px; 
   background-color: #FAFAFA;
   border: 1px solid #E2E8F0;
-  border-radius: 16px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   gap: 12px;
   cursor: pointer;
   box-sizing: border-box;
-  transition: all 0.3s;
+  transition: all 0.2s;
+  position: relative;
+  z-index: 102;
+}
+
+.org-switcher:hover {
+  border-color: #CBD5E1;
+  background-color: #F8FAFC;
+}
+
+.org-switcher.is-active {
+  border-color: var(--clr-primary);
+  background-color: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.org-switcher.is-active .chevron {
+  color: var(--clr-primary);
+}
+
+.org-switcher.is-active .org-icon {
+  background-color: var(--clr-primary);
+  color: white;
+}
+
+.org-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 12px;
+  right: 12px;
+  background: white;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 8px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  z-index: 102;
+}
+
+.chevron {
+  margin-left: auto;
+  color: #94A3B8;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.chevron.rotated {
+  transform: rotate(180deg);
 }
 
 .org-icon {
@@ -541,6 +701,11 @@ onUnmounted(() => {
   color: #0F172A;
 }
 
+.icon-btn.is-active {
+  background-color: rgba(83, 70, 152, 0.1);
+  color: #534698;
+}
+
 .search-box {
   display: flex;
   align-items: center;
@@ -590,25 +755,181 @@ onUnmounted(() => {
   gap: 4px;
 }
 
-.notification-btn {
+.notification-btn-wrapper {
   position: relative;
+}
+
+.notif-dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: -80px;
+  width: 380px;
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  z-index: 1000;
+}
+
+.notif-header {
+  padding: 20px 20px 16px 20px;
+  background-color: #FFFFFF;
+}
+
+.notif-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.notif-header-top h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0;
+}
+
+.mark-read-btn {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--clr-primary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.mark-read-btn:hover { background-color: rgba(83, 70, 152, 0.05); }
+
+.notif-header-sub {
+  font-size: 12px;
+  color: #64748B;
+  margin: 0;
+}
+
+.notif-list {
+  max-height: 440px;
+  overflow-y: auto;
+  border-top: 1px solid #F1F5F9;
+}
+
+.notif-item {
+  display: flex;
+  gap: 16px;
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: background 0.2s;
+  border-bottom: 1px solid #F8FAFC;
+}
+
+.notif-item:hover { background-color: #F8FAFC; }
+
+.notif-item.unread {
+  background-color: rgba(83, 70, 152, 0.02);
+}
+
+.notif-icon-box {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.notif-icon-box.success { background-color: #ECFDF5; color: #10B981; }
+.notif-icon-box.primary { background-color: #F5F3FF; color: #534698; }
+.notif-icon-box.warning { background-color: #FFFBEB; color: #F59E0B; }
+
+.notif-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.notif-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.notif-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1E293B;
+}
+
+.notif-dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--clr-primary);
+  border-radius: 50%;
+}
+
+.notif-desc {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #64748B;
+  margin: 0;
+}
+
+.notif-time {
+  font-size: 11px;
+  color: #94A3B8;
+  margin-top: 2px;
+}
+
+.notif-footer {
+  padding: 12px;
+  background-color: #F8FAFC;
+  border-top: 1px solid #F1F5F9;
+}
+
+.view-all-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  background: white;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.view-all-btn:hover {
+  border-color: var(--clr-primary);
+  color: var(--clr-primary);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 .notif-badge {
   position: absolute;
-  top: 2px;
-  right: 2px;
+  top: 6px;
+  right: 6px;
   background-color: #EF4444;
   color: white;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   border: 2px solid #FFFFFF;
+  z-index: 10;
 }
 
 .divider-v {
