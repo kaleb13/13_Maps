@@ -1,0 +1,103 @@
+version: "3.9"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Route Optimization SaaS — Docker Compose
+# Services: db (PostgreSQL), backend (FastAPI), frontend (Vue/Nginx), osrm
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+
+  # ── PostgreSQL ─────────────────────────────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    container_name: routeopt_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: ${POSTGRES_DB:-routeopt}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - routeopt_net
+
+  # ── FastAPI Backend ────────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: routeopt_backend
+    restart: unless-stopped
+    env_file: ./backend/.env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-password}@db:5432/${POSTGRES_DB:-routeopt}
+      OSRM_BASE_URL: http://osrm:5000
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app  # hot-reload in development; remove in production
+    command: >
+      uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    networks:
+      - routeopt_net
+
+  # ── Vue Frontend ───────────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: routeopt_frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - routeopt_net
+
+  # ── OSRM Routing Engine ────────────────────────────────────────────────────
+  osrm:
+    image: osrm/osrm-backend:latest
+    container_name: routeopt_osrm
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./osrm-data:/data
+    # Replace <region>.osrm with your pre-processed map file name
+    # Pre-process: docker run -t -v $(pwd)/osrm-data:/data osrm/osrm-backend
+    #   osrm-extract -p /opt/car.lua /data/<region>.osm.pbf
+    #   osrm-partition /data/<region>.osrm
+    #   osrm-customize /data/<region>.osrm
+    command: osrm-routed --algorithm mld /data/ethiopia-latest.osrm
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/nearest/v1/driving/0,0"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - routeopt_net
+
+# ── Volumes ──────────────────────────────────────────────────────────────────
+volumes:
+  postgres_data:
+
+# ── Networks ─────────────────────────────────────────────────────────────────
+networks:
+  routeopt_net:
+    driver: bridge
