@@ -97,7 +97,7 @@ class RouteStop(Base):
     job_id     = Column(UUID(as_uuid=True), ForeignKey("jobs.id",   ondelete="RESTRICT"), nullable=False, index=True)
 
     sequence         = Column(Integer, nullable=False)            # 1-based order in route
-    estimated_arrival= Column(sa.Time, nullable=True)
+    estimated_arrival= Column(DateTime(timezone=True), nullable=True)
     actual_arrival   = Column(DateTime(timezone=True), nullable=True)
     actual_departure = Column(DateTime(timezone=True), nullable=True)
     status           = Column(StopStatus, nullable=False, default="pending", server_default="pending")

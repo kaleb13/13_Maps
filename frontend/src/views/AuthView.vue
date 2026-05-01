@@ -20,15 +20,6 @@
       </div>
 
       <div class="form-body">
-        <div class="brand-minimal">
-          <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="40" height="40" rx="8" fill="black"/>
-            <path d="M12 10H28V14H22V30H18V14H12V10Z" fill="white"/>
-            <circle cx="28" cy="28" r="4" fill="#F5F5F5" stroke="white" stroke-width="2"/>
-          </svg>
-          <span class="brand-text">13 Maps</span>
-        </div>
-
         <!-- Login Form -->
         <form v-if="activeTab === 'login'" @submit.prevent="handleLogin" class="auth-form fade-in">
           <div class="form-title">
@@ -163,19 +154,28 @@
     <section class="auth-info">
       <div class="info-content">
         <div class="info-visual">
-          <div class="graphic-container">
-            <div class="graphic-blob">
-              <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="#E2E8F0" stroke-width="0.5">
-                <circle cx="12" cy="12" r="10" />
-                <path d="M12 2v20M2 12h20" />
-              </svg>
-            </div>
-            <div class="circle c1">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a4.5 4.5 0 0 0 0 9H13a4.5 4.5 0 0 1 0 9H4.5"/><polyline points="12,2 12,22"/></svg>
-            </div>
-            <div class="circle c2">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f7931a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
-            </div>
+          <div class="route-illustration">
+            <svg width="280" height="200" viewBox="0 0 280 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Decorative Map Grids -->
+              <path d="M20 40 L260 40 M20 80 L260 80 M20 120 L260 120 M20 160 L260 160" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="4 4" />
+              <path d="M60 20 L60 180 M120 20 L120 180 M180 20 L180 180 M240 20 L240 180" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="4 4" />
+              
+              <!-- Route path -->
+              <path class="animated-route" d="M 40 150 C 80 150, 60 50, 120 50 S 160 140, 200 120 S 230 80, 240 60" stroke="#534698" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke-dasharray="400" stroke-dashoffset="400" />
+              
+              <!-- Start Location -->
+              <circle cx="40" cy="150" r="8" fill="white" stroke="#534698" stroke-width="3" />
+              
+              <!-- Waypoints -->
+              <circle cx="120" cy="50" r="6" fill="white" stroke="#94A3B8" stroke-width="2" />
+              <circle cx="200" cy="120" r="6" fill="white" stroke="#94A3B8" stroke-width="2" />
+              
+              <!-- End Destination Marker -->
+              <g transform="translate(240, 60)" class="destination-pin">
+                <path d="M0 -16 C -6 -16 -10 -11 -10 -6 C -10 2 0 10 0 10 C 0 10 10 2 10 -6 C 10 -11 6 -16 0 -16 Z" fill="#EF4444" />
+                <circle cx="0" cy="-6" r="3" fill="white" />
+              </g>
+            </svg>
           </div>
         </div>
 
@@ -299,6 +299,7 @@ async function handleRegister() {
   flex: 2;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   padding: 24px 40px;
   background: white;
   height: 100%;
@@ -313,15 +314,15 @@ async function handleRegister() {
 .auth-toggle {
   display: flex;
   background: #f1f5f9;
-  padding: 3px;
-  border-radius: 999px;
+  padding: 5px;
+  border-radius: 14px;
 }
 
 .toggle-btn {
-  padding: 6px 20px;
-  border-radius: 999px;
+  padding: 10px 32px;
+  border-radius: 10px;
   border: none;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
   color: #64748b;
   background: transparent;
@@ -341,18 +342,6 @@ async function handleRegister() {
   margin: 0 auto;
 }
 
-.brand-minimal {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 24px;
-}
-
-.brand-text {
-  font-size: 18px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-}
 
 .form-title h1 {
   font-size: 20px;
@@ -429,6 +418,10 @@ async function handleRegister() {
   font-size: 14px;
   font-weight: 700;
   margin-top: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 .btn-primary:hover {
@@ -462,34 +455,30 @@ async function handleRegister() {
   justify-content: center;
 }
 
-.graphic-container {
+.route-illustration {
   position: relative;
-  width: 200px;
-  height: 200px;
-}
-
-.circle {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: white;
+  width: 300px;
+  height: 220px;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: absolute;
-  z-index: 2;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
-.c1 { left: 0; top: 20%; color: #64748b; }
-.c2 { right: 0; top: 10%; }
+.animated-route {
+  animation: drawRoute 3s ease-in-out forwards;
+}
 
-.graphic-blob {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  opacity: 0.5;
+.destination-pin {
+  animation: dropPin 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 2.5s both;
+}
+
+@keyframes drawRoute {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes dropPin {
+  0% { transform: translate(240px, 40px); opacity: 0; }
+  100% { transform: translate(240px, 60px); opacity: 1; }
 }
 
 .info-text h2 {
@@ -544,6 +533,7 @@ async function handleRegister() {
 .info-footer {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 12px;
   margin-top: auto;
   padding-bottom: 10px;

@@ -16,6 +16,8 @@ from app.models.route import Route, RouteStop
 from app.models.job import Job
 from app.schemas.route import RouteCreate, RouteResponse, RouteListResponse
 from app.services.mock_optimizer import MockOptimizer
+from app.services.geocoding import GeocodingService
+from app.services.route_optimization import RouteOptimizationService
 
 router = APIRouter()
 
@@ -50,11 +52,20 @@ async def create_route(
     # 3. Create Jobs and RouteStops for each optimized location
     response_stops = []
     for stop_data in optimized_data["stops"]:
+        address = stop_data.get("address", "Unknown Location")
+        if address == "Unknown Location" or str(address).startswith("Stop "):
+            try:
+                geo = await GeocodingService.reverse_geocode(stop_data["latitude"], stop_data["longitude"])
+                if geo and geo.get("display_name"):
+                    address = geo["display_name"]
+            except Exception:
+                pass
+                
         # Create a Job (delivery point) for the stop
         job = Job(
             org_id=current_user.org_id,
-            title=stop_data["address"],
-            address=stop_data["address"],
+            title=address,
+            address=address,
             latitude=stop_data["latitude"],
             longitude=stop_data["longitude"],
             status="assigned"
@@ -80,7 +91,8 @@ async def create_route(
             "latitude": job.latitude,
             "longitude": job.longitude,
             "address": job.address,
-            "status": route_stop.status
+            "status": route_stop.status,
+            "estimated_arrival": None
         })
 
     await db.commit()
@@ -149,7 +161,8 @@ async def get_route(
             "latitude": stop.job.latitude,
             "longitude": stop.job.longitude,
             "address": stop.job.address,
-            "status": stop.status
+            "status": stop.status,
+            "estimated_arrival": stop.estimated_arrival
         })
         
     return {
@@ -183,3 +196,24 @@ async def delete_route(
         
     await db.delete(route)
     await db.commit()
+
+@router.post("/{route_id}/optimize")
+async def optimize_existing_route(
+    route_id: str,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_roles(["admin", "manager"])),
+):
+    """
+    Optimize an existing route:
+    1. Uses OSRM to determine the best sequence and durations.
+    2. Calculates accurate ETA for each stop.
+    3. Updates RouteStops and Route records in the database.
+    """
+    try:
+        # The logic is encapsulated in the service layer
+        result = await RouteOptimizationService.optimize_route_record(route_id, current_user.org_id, db)
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

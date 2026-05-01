@@ -26,6 +26,7 @@ class RouteStopResponse(BaseModel):
     longitude: float
     address: str
     status: str
+    estimated_arrival: Optional[datetime] = None
 
     model_config = {"from_attributes": True}
 

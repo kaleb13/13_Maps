@@ -12,7 +12,7 @@ from app.models.user import User
 from app.models.optimization_job import OptimizationJob
 from app.schemas.route import OptimizeRequest, OptimizeResponse
 from app.services.osrm_service import get_matrix, get_route
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 router = APIRouter()
 
@@ -142,14 +142,34 @@ async def submit_optimization(
     
     # Build stops response
     response_stops = []
+    
+    # We need legs for accurate duration, let's use what we fetched or estimate
+    # In chunked routing we might not have perfect legs for the whole trip easily 
+    # mapped if we had multiple chunks, but for standard <50 we do.
+    # To keep it simple and match the UI, let's use total_duration distributed or actual legs if chunk=1
+    
+    current_eta = datetime.now(timezone.utc)
+    # If we have only 1 chunk, we can use actual legs
+    use_actual_legs = len(chunks) == 1 and "legs" in best_route
+    legs = best_route.get("legs", []) if use_actual_legs else []
+    
     for seq_num, loc in enumerate(ordered_locations, start=1):
         response_stops.append({
             "sequence": seq_num,
             "latitude": loc["latitude"],
             "longitude": loc["longitude"],
             "address": loc.get("address", f"Stop {seq_num}"),
-            "status": "pending"
+            "status": "pending",
+            "eta": current_eta.isoformat()
         })
+        
+        # calculate next ETA
+        if use_actual_legs and seq_num - 1 < len(legs):
+            leg_duration = legs[seq_num - 1].get("duration", 0.0)
+            current_eta += timedelta(seconds=leg_duration + 600) # 10 min service time
+        else:
+            # Fallback estimation if chunked
+            current_eta += timedelta(seconds=(total_duration / max(1, num_stops - 1)) + 600)
 
     # 5. Log the job in history
     job = OptimizationJob(

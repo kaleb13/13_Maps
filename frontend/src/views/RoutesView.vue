@@ -62,6 +62,9 @@
             <span class="stop-number active">{{ i + 1 }}</span>
             <div class="stop-info">
               <span class="stop-addr">{{ stop.address }}</span>
+              <span v-if="stop.eta" class="stop-coords" style="color: #534698; font-weight: 600;">
+                ETA: {{ formatETA(stop.eta) }}
+              </span>
             </div>
           </li>
         </ul>
@@ -139,13 +142,40 @@ function initMap() {
   })
 }
 
-function addLocation(lat, lng, address = null) {
+async function addLocation(lat, lng, address = null) {
+  const index = locations.value.length;
+  const defaultName = `Stop ${index + 1}`;
+  
+  if (address) {
+    locations.value.push({ latitude: lat, longitude: lng, address });
+    updateMapMarkers();
+    return;
+  }
+  
+  // Push with loading state
   locations.value.push({ 
     latitude: lat, 
     longitude: lng,
-    address: address || `Stop ${locations.value.length + 1}`
-  })
-  updateMapMarkers()
+    address: `${defaultName} (Loading...)`
+  });
+  updateMapMarkers();
+  
+  // Fetch real address
+  try {
+    const res = await http.get(`/geocode/reverse?lat=${lat}&lon=${lng}`);
+    if (res && res.display_name) {
+      // Take the first 2-3 segments so it's not overwhelmingly long
+      const parts = res.display_name.split(',');
+      const placeName = parts.slice(0, Math.min(3, parts.length)).join(',').trim();
+      locations.value[index].address = `${defaultName} (${placeName})`;
+    } else {
+      locations.value[index].address = defaultName;
+    }
+  } catch (err) {
+    locations.value[index].address = defaultName;
+  }
+  
+  updateMapMarkers();
 }
 
 function removeLocation(index) {
@@ -245,6 +275,12 @@ function drawRoute(stops, geometry = null) {
   }).addTo(map.value)
 
   map.value.fitBounds(routePolyline.value.getBounds(), { padding: [50, 50] })
+}
+
+function formatETA(isoString) {
+  if (!isoString) return '';
+  const d = new Date(isoString);
+  return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 </script>
 
